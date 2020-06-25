@@ -6,15 +6,17 @@
 }
 
 .plus-icon span {
-	height: 12px;
+	height: 6px;
 	margin: 0 10px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	color: #fff;
 }
 
 .logos {
 	margin: 0 auto;
+	margin-bottom: 40px;
 	width: 15%;
 	display: flex;
 	justify-content: space-evenly;
@@ -22,6 +24,7 @@
 }
 .logos .add {
 	margin: 0 10px;
+	color: #fff;
 }
 .logos img {
 	object-fit: contain;
