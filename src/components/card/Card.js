@@ -3,7 +3,7 @@ import './Card.css';
 
 const card = (props) => {
 	return (
-		<div className='card'>
+		<div className='card' onClick={props.cardClicked}>
 			<span className='material-icons'>create</span>
 			<div>
 				<h1>{props.title}</h1>

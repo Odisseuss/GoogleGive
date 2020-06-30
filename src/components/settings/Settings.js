@@ -5,7 +5,7 @@ const settings = () => {
 	return (
 		<div className='night-mode-switch'>
 			<label className='switch'>
-				<input type='checkbox' />
+				<input type='checkbox' defaultChecked />
 				<span className='slider'></span>
 			</label>
 			<span className='material-icons'>nights_stay</span>
