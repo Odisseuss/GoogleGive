@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import "./modal.css";
 import "../createNote/CreateNote.css";
 const Modal = (props) => {
-    const [values, setValues] = useState({ title: "", text: "" });
+    const [title, setTitle] = useState(props.title);
+    const [text, setText] = useState(props.text);
     const handleInputChange = (e) => {
-        setValues({ title: e.target.value });
+        setTitle(e.target.value);
     };
     const handleTextareaChange = (e) => {
-        setValues({ text: e.target.value });
+        setText(e.target.value);
     };
     return (
         <div className="modal-backdrop">
@@ -19,20 +20,14 @@ const Modal = (props) => {
             >
                 <form
                     className="card-edit-form"
-                    onSubmit={(e) =>
-                        props.editNote(
-                            values.title,
-                            values.text,
-                            props.timestamp,
-                            e
-                        )
-                    }
+                    onSubmit={(e) => props.editNote(title, text, props.id, e)}
                 >
                     <input
                         id="modalTitle"
                         name="title"
+                        type="text"
                         placeholder="Title"
-                        value={props.title}
+                        value={title || ""}
                         onChange={handleInputChange}
                     />
 
@@ -41,13 +36,14 @@ const Modal = (props) => {
                         name="content"
                         className="textarea"
                         placeholder="Create a note..."
-                        value={props.text}
+                        value={text || ""}
                         onChange={handleTextareaChange}
                     ></textarea>
                     <footer className="modal-footer">
                         <button
                             type="button"
                             className="delete-btn material-icons"
+                            onClick={(e) => props.deleteNote(props.id, e)}
                         >
                             delete
                         </button>

@@ -1,16 +1,20 @@
-import React from 'react';
-import './Settings.css';
+import React from "react";
+import "./Settings.css";
 
-const settings = () => {
-	return (
-		<div className='night-mode-switch'>
-			<label className='switch'>
-				<input type='checkbox' defaultChecked />
-				<span className='slider'></span>
-			</label>
-			<span className='material-icons'>nights_stay</span>
-		</div>
-	);
+const settings = (props) => {
+    return (
+        <div className="night-mode-switch">
+            <label className="switch">
+                <input
+                    type="checkbox"
+                    defaultChecked
+                    onClick={props.switchTheme}
+                />
+                <span className="slider"></span>
+            </label>
+            <span className="material-icons">nights_stay</span>
+        </div>
+    );
 };
 
 export default settings;

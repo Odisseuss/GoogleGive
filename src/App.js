@@ -23,15 +23,40 @@ firebase.initializeApp(firebaseConfig);
 class App extends Component {
     constructor(props) {
         super(props);
-        this.state = { cards: [], editing: 0, current_card: {} };
+        this.db = firebase.firestore();
+        this.state = {
+            cards: [],
+            editing: 0,
+            current_card: {},
+            theme: true,
+        };
         this.handleCardClick = this.handleCardClick.bind(this);
+        this.handleFirebaseNoteEdit = this.handleFirebaseNoteEdit.bind(this);
+        this.switchTheme = this.switchTheme.bind(this);
+        // this.getFirestoreCards = this.getFirestoreCards.bind(this);
     }
-
+    getFirestoreCards() {
+        this.cards = [];
+        this.db
+            .collection("notes")
+            .orderBy("date")
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((note) => {
+                    let data = note.data();
+                    this.cards.push({
+                        title: data.title,
+                        text: data.text,
+                        id: note.id,
+                    });
+                });
+                this.setState({ cards: this.cards.reverse() });
+            });
+    }
     handleFirebaseNoteCreation(title, text) {
         let timestamp = firebase.firestore.FieldValue.serverTimestamp();
         this.db
             .collection("notes")
-            .doc(timestamp)
             .add({
                 title: title,
                 text: text,
@@ -45,52 +70,64 @@ class App extends Component {
             });
         this.getFirestoreCards();
     }
-    handleFirebaseNoteEdit(title, text, timestamp, e) {
+    handleFirebaseNoteEdit(title, text, id, e) {
         this.db
             .collection("notes")
-            .doc(timestamp)
+            .doc(id)
             .update({
                 title: title,
                 text: text,
             })
-            .then(function (docRef) {
-                console.log("Document updated with ID: ", docRef.id);
+            .then(function () {
+                console.log("Document updated");
             })
             .catch(function (error) {
                 console.error("Error adding document: ", error);
             });
         this.getFirestoreCards();
+        this.setState({ editing: 0, current_card: {} });
         e.preventDefault();
     }
-    handleCardClick(title, text, timestamp) {
-        this.setState({
-            editing: 1,
-            current_card: { title: title, text: text, timestamp: timestamp },
-        });
-    }
-    getFirestoreCards() {
-        this.cards = [];
+    handleFirebaseNoteDelete(id, e) {
         this.db
             .collection("notes")
-            .orderBy("date")
-            .get()
-            .then((querySnapshot) => {
-                querySnapshot.forEach((note) => {
-                    let data = note.data();
-                    this.cards.push({ title: data.title, text: data.text });
-                });
-                this.setState({ cards: this.cards.reverse() });
+            .doc(id)
+            .delete()
+            .then(function () {
+                console.log("Document deleted");
+            })
+            .catch(function (error) {
+                console.error("Error adding document: ", error);
             });
+        this.getFirestoreCards();
+        this.setState({ editing: 0, current_card: {} });
+        e.preventDefault();
+    }
+    handleCardClick(title, text, id) {
+        this.setState({
+            editing: 1,
+            current_card: { title: title, text: text, id: id },
+        });
+    }
+    switchTheme() {
+        this.setState({ theme: !this.state.theme });
+        if (this.state.theme) {
+            document.body.style.backgroundColor = "#f0f0f0";
+        } else {
+            document.body.style.backgroundColor = "#202124";
+        }
     }
     componentWillMount() {
-        this.db = firebase.firestore();
-        console.log(this.db.collection("notes").get());
         this.getFirestoreCards();
     }
     render() {
         return (
-            <div className="App">
-                <Settings />
+            <div
+                className={
+                    "App " + (this.state.theme === true ? "night" : "day")
+                }
+            >
+                <Settings switchTheme={this.switchTheme} />
                 <Logos />
                 <CreateNote
                     createNote={(title, text) =>
@@ -103,10 +140,14 @@ class App extends Component {
                             <Card
                                 title={item.title}
                                 text={item.text}
-                                timestamp={item.timestamp}
+                                id={item.id}
                                 key={index}
                                 cardClicked={() =>
-                                    this.handleCardClick(item.title, item.text)
+                                    this.handleCardClick(
+                                        item.title,
+                                        item.text,
+                                        item.id
+                                    )
                                 }
                             />
                         );
@@ -116,14 +157,12 @@ class App extends Component {
                     <Modal
                         title={this.state.current_card.title}
                         text={this.state.current_card.text}
-                        timestamp={this.state.current_card.timestamp}
-                        editNote={(title, text, timestamp, e) =>
-                            this.handleFirebaseNoteEdit(
-                                title,
-                                text,
-                                timestamp,
-                                e
-                            )
+                        id={this.state.current_card.id}
+                        editNote={(title, text, id, e) =>
+                            this.handleFirebaseNoteEdit(title, text, id, e)
+                        }
+                        deleteNote={(id, e) =>
+                            this.handleFirebaseNoteDelete(id, e)
                         }
                     />
                 ) : (
