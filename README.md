@@ -2,6 +2,8 @@
 
 GoogleGive is a Google Keep clone made with React and Firebase
 
+A demo version is available at: https://give-a5ae5.firebaseapp.com/
+
 ## Available Scripts
 
 In the project directory, you can run:
