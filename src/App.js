@@ -33,6 +33,7 @@ class App extends Component {
     this.handleCardClick = this.handleCardClick.bind(this);
     this.handleFirebaseNoteEdit = this.handleFirebaseNoteEdit.bind(this);
     this.switchTheme = this.switchTheme.bind(this);
+
     // this.getFirestoreCards = this.getFirestoreCards.bind(this);
   }
   getFirestoreCards() {
@@ -58,9 +59,15 @@ class App extends Component {
       .collection("state")
       .doc("nightmode")
       .get()
-      .then((querySnapshot) =>
-        this.setState({ theme: querySnapshot.data().on })
-      );
+      .then((querySnapshot) => {
+        this.setState({ theme: querySnapshot.data().on });
+        if (this.state.theme === true) {
+          document.body.style.backgroundColor = "#202124";
+        }
+        if (this.state.theme === false) {
+          document.body.style.backgroundColor = "#f0f0f0";
+        }
+      });
   }
   handleFirebaseNoteCreation(title, text) {
     let timestamp = firebase.firestore.FieldValue.serverTimestamp();
@@ -119,16 +126,19 @@ class App extends Component {
     });
   }
   switchTheme() {
-    this.setState((prevState) => {
-      return {
-        theme: !prevState.theme,
-      };
-    });
+    let theme = this.state.theme;
+    this.setState({ theme: !theme });
+    if (!theme === true) {
+      document.body.style.backgroundColor = "#202124";
+    } else {
+      document.body.style.backgroundColor = "#f0f0f0";
+    }
+
     this.db
       .collection("state")
       .doc("nightmode")
       .update({
-        on: !this.state.theme,
+        on: !theme,
       })
       .then(function () {
         console.log("Document updated");
@@ -136,13 +146,9 @@ class App extends Component {
       .catch(function (error) {
         console.error("Error updating document: ", error);
       });
-    if (this.state.theme === true) {
-      document.body.style.backgroundColor = "#f0f0f0";
-    } else {
-      document.body.style.backgroundColor = "#202124";
-    }
   }
   componentWillMount() {
+    console.log("yoo");
     this.getFirestoreCards();
     this.getNightModeState();
   }
