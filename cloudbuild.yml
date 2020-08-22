@@ -1,0 +1,26 @@
+steps:
+  - name: "gcr.io/cloud-builders/npm"
+    args: ["install"]
+
+  - name: "gcr.io/cloud-builders/npm"
+    dir: "functions"
+    args: ["install"]
+
+  - name: "gcr.io/cloud-builders/npm"
+    args: ["run", "test:unit"]
+
+  - name: "gcr.io/cloud-builders/npm"
+    args: ["run", "build"]
+    env:
+      [
+        "FIREBASE_API_KEY=${_FIREBASE_API_KEY}",
+        "FIREBASE_AUTH_DOMAIN=${_FIREBASE_AUTH_DOMAIN}",
+        "FIREBASE_DATABASE_URL=${_FIREBASE_DATABASE_URL}",
+        "FIREBASE_PROJECT_ID=${_FIREBASE_PROJECT_ID}",
+        "FIREBASE_STORAGE_BUCKET=${_FIREBASE_STORAGE_BUCKET}",
+        "FIREBASE_MESSAGE_SENDER_ID=${_FIREBASE_MESSAGE_SENDER_ID}",
+        "FIREBASE_APP_ID=${_FIREBASE_APP_ID}",
+      ]
+
+  - name: "gcr.io/$PROJECT_ID/firebase"
+    args: ["deploy", "--debug"]
