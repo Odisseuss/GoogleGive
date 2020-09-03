@@ -155,7 +155,6 @@ class App extends Component {
   render() {
     return (
       <div className={"App " + (this.state.theme === true ? "night" : "day")}>
-        <h1>IT WORKS</h1>
         <Settings switchTheme={this.switchTheme} checked={this.state.theme} />
         <Logos />
         <CreateNote
