@@ -1,5 +1,5 @@
 import React from "react";
-import "./Logos.css";
+import "./logos.css";
 const logos = () => {
   return (
     <div className="logos">
