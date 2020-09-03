@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Logos from "./components/logos/Logos.js";
+import Logos from "./components/logos/Logos";
 import CreateNote from "./components/createNote/CreateNote";
 import Settings from "./components/settings/Settings";
 import Card from "./components/card/Card";
