@@ -1,6 +1,8 @@
 # GoogleGive
 
-GoogleGive is a Google Keep clone that I made with React and Firebase
+GoogleGive is a Google Keep clone that I made with React and Firebase. It only supports creating, editing, and deleting notes.
+
+P.S. It has dark mode :wink:
 
 A demo version is available at: https://give-a5ae5.firebaseapp.com/
 
